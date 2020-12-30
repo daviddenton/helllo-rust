@@ -1,4 +1,4 @@
-pub fn concat(a: &str, b: &str) -> String {
+pub fn concat<'a>(a: &'a str, b: &'a str) -> String {
     [a, b].join("")
 }
 
@@ -7,40 +7,23 @@ mod tests {
     // Note this useful idiom: importing names from outer (for mod tests) scope.
     use super::*;
 
-    struct MyStruct {
-        a: Option<String>,
-        b: String,
+    struct MyStruct<'a> {
+        a: Option<&'a str>,
+        b: &'a str,
     }
 
-    impl MyStruct {
+    impl MyStruct<'_> {
         fn describe(&self) -> Option<String> {
-            Some(concat(&self.a.as_ref().unwrap(), &self.b))
+            Some(concat(&self.a.as_ref()?, &self.b))
         }
     }
 
     #[test]
     fn test_concat() {
-        let mys = MyStruct { a: Some("a".to_string()), b: "b".to_string() };
-        assert_eq!(mys.describe(), Some("ab".to_string()));
-
-        //
-        // let b = |a: &str| { concat(a, a) };
-        //
-        // assert_eq!(b("a"), "aa");
-        // let a = "a";
-        // let mut ma = a;
-        //
-        // let mut l = vec![ma, "c"];
-        // l[0] = a;
-        // let result = concat_with_b(ma);
-        //
-        // let mab = concat(&result.0, &result.1);
-        // assert_eq!(mab, "ab");
-    }
-
-    fn concat_with_b(it: &str) -> (String, &str) {
-        let my_var = "foo";
-        let string = concat(it, &concat(my_var, "b"));
-        (string, my_var)
+        let b= "b";
+        let mys = MyStruct { a: Some("a"), b };
+        let option = Some("ab".to_string());
+        assert_eq!(mys.describe(), option);
+        assert_eq!(mys.describe(), option);
     }
 }
