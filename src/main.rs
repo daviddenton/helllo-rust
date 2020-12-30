@@ -8,21 +8,20 @@ mod tests {
     use super::*;
 
     struct MyStruct {
-        a: String,
+        a: Option<String>,
         b: String,
     }
 
     impl MyStruct {
-        fn describe(self) -> String {
-            concat(&self.a, &self.b)
+        fn describe(&self) -> Option<String> {
+            Some(concat(&self.a.as_ref().unwrap(), &self.b))
         }
     }
 
     #[test]
     fn test_concat() {
-        let mys = MyStruct { a: "a".to_string(), b: "b".to_string() };
-        let mys2 = MyStruct { a: mys.a, b: mys.b };
-        assert_eq!(mys2.describe(), "ab");
+        let mys = MyStruct { a: Some("a".to_string()), b: "b".to_string() };
+        assert_eq!(mys.describe(), Some("ab".to_string()));
 
         //
         // let b = |a: &str| { concat(a, a) };
